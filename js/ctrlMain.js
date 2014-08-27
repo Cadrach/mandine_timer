@@ -1,32 +1,51 @@
-function ctrlMain($scope, localStorageService){
+function ctrlMain($scope, $filter, localStorageService){
 
     //Bind local storage
     localStorageService.bind($scope, 'astreintes', []);
+    localStorageService.bind($scope, 'focus', 0);
 
     //Restore dates
-    $scope.astreintes.forEach(function(a){
-        if(a.date)
-        {
-            a.date = new Date(a.date);
-        }
-        a.appels.forEach(function(p){
-            if(p.from)
+    if(typeof $scope.astreintes == 'object')
+    {
+        $scope.astreintes.forEach(function(a){
+            if(a.date)
             {
-                p.from = new Date(p.from);
+                a.date = new Date(a.date);
             }
-            if(p.to)
-            {
-                p.to = new Date(p.to);
-            }
-        })
-    })
+            a.appels.forEach(function(p){
+                if(p.from)
+                {
+                    p.from = new Date(p.from);
+                }
+                if(p.to)
+                {
+                    p.to = new Date(p.to);
+                }
+            })
+        });
+    }
+
+    //Rotate dates
+    $scope.moveTo = function(position){
+        $scope.focus = position;
+    }
 
     //Add astreinte
     $scope.addAstreinte = function(){
-        $scope.astreintes.push({
-            date: new Date,
+        var position = $scope.astreintes.length;
+        var date = new Date;
+        if(position)
+        {
+            date = new Date(new Date().setDate($scope.astreintes[position-1].date.getDate()+1));
+        }
+        var ast = {
+            date: date,
             appels: []
-        });
+        };
+
+        $scope.astreintes.push(ast);
+        $scope.addAppel($scope.astreintes[position]);
+        $scope.focus = position;
     }
 
     //Remove astreinte
@@ -64,6 +83,8 @@ function ctrlMain($scope, localStorageService){
 
     //Update storage when astreinte changes (deep watch)
     $scope.$watch(function(){return $scope.astreintes}, function(){
+        $scope.astreintes = $filter('orderBy')($scope.astreintes, 'date');
+
         localStorageService.set('astreintes', $scope.astreintes);
 
         //Compute
@@ -78,8 +99,9 @@ function ctrlMain($scope, localStorageService){
         $scope.durationAppelNuit = moment.duration();
 
         $scope.astreintes.forEach(function(ast){
+            ast.date.setSeconds(0);
             var start, end;
-            var date = moment(ast.date).seconds(0);
+            var date = moment(ast.date);
             var nighttime = moment(date).hours(21).minutes(0);
             var day = date.day();
 
@@ -110,6 +132,8 @@ function ctrlMain($scope, localStorageService){
             }
 
             ast.appels.forEach(function(appel){
+                appel.from.setSeconds(0);
+                appel.to.setSeconds(0);
                 var from = moment(appel.from);
                 var to = moment(appel.to);
 
@@ -174,5 +198,5 @@ function ctrlMain($scope, localStorageService){
             })
         });
 
-    }, true)
+    }, true);
 }

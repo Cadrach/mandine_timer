@@ -1,18 +1,18 @@
 <!--CSS-->
 <link href="bower/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
 <link href="bower/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">
-<link href="bower/angular-motion/dist/angular-motion.min.css" media="screen" rel="stylesheet" type="text/css">
+<!--<link href="bower/angular-motion/dist/angular-motion.min.css" media="screen" rel="stylesheet" type="text/css">-->
 
 <!--JS LIB-->
 <script type="text/javascript" src="bower/moment/min/moment.min.js"></script>
 <script type="text/javascript" src="bower/moment-duration-format/lib/moment-duration-format.js"></script>
 
 <!--ANGULAR-->
-<script type="text/javascript" src="bower/angular/angular.js"></script>
-<script type="text/javascript" src="bower/angular-strap/dist/angular-strap.js"></script>
-<script type="text/javascript" src="bower/angular-strap/dist/angular-strap.tpl.min.js"></script>
+<script type="text/javascript" src="bower/angular/angular.min.js"></script>
+<!--<script type="text/javascript" src="bower/angular-strap/dist/angular-strap.js"></script>-->
+<!--<script type="text/javascript" src="bower/angular-strap/dist/angular-strap.tpl.min.js"></script>-->
 <!--<script type="text/javascript" src="bower/angular-sanitize/angular-sanitize.min.js"></script>-->
-<script type="text/javascript" src="bower/angular-animate/angular-animate.min.js"></script>
+<!--<script type="text/javascript" src="bower/angular-animate/angular-animate.min.js"></script>-->
 <script type="text/javascript" src="bower/angular-local-storage/angular-local-storage.min.js"></script>
 
 <!--CODE-->
@@ -25,37 +25,37 @@
 <title>Mandine Timer's</title>
 
 <div class="container" ng-app="Application" ng-controller="ctrlMain">
-
+    <br/>
     <div class="panel panel-default">
         <div class="panel-heading">Mandine Timer's</div>
             <table class="table table-condensed">
                 <tr>
                     <th>Jours Semaine</th>
-                    <td>17h50 / 07h30</td>
+                    <td class="hidden-xs">17h50 / 07h30</td>
                     <td>{{nbJourSemaine}}</td>
                     <td class="text-right">{{durationSemaine.format('h[h] mm[m]')}}</td>
                 </tr>
                 <tr>
                     <th>Jours Weekend/Feriés</th>
-                    <td>07h30 / 07h30</td>
+                    <td class="hidden-xs">07h30 / 07h30</td>
                     <td>{{nbJourWeekend}}</td>
                     <td class="text-right">{{durationWeekend.format('h[h] mm[m]')}}</td>
                 </tr>
                 <tr>
                     <th>Dérangé Jour</th>
-                    <td>17h50 / 21h00</td>
+                    <td class="hidden-xs">17h50 / 21h00</td>
                     <td>&nbsp;</td>
                     <td class="text-right">{{durationAppelJour.format('h[h] mm[m]')}}</td>
                 </tr>
                 <tr>
                     <th>Dérangé Nuit</th>
-                    <td>21h00 / 07h30</td>
+                    <td class="hidden-xs">21h00 / 07h30</td>
                     <td>&nbsp;</td>
                     <td class="text-right">{{durationAppelNuit.format('h[h] mm[m]')}}</td>
                 </tr>
                 <tr>
                     <th>Dérangé Dimanche/Ferié</th>
-                    <td>07h30 / 21h00</td>
+                    <td class="hidden-xs">07h30 / 21h00</td>
                     <td>&nbsp;</td>
                     <td class="text-right">{{durationAppelFerie.format('h[h] mm[m]')}}</td>
                 </tr>
@@ -74,35 +74,37 @@
 
     <div class="clearfix"></div>
 
-    <div ng-repeat="astreinte in astreintes|orderBy:'date'" class="panel panel-default">
-        <div class="panel-heading">
+    <div class="panel panel-default" ng-repeat="astreinte in astreintes" ng-show="focus==$index">
+        <div class="panel-heading text-center">
 
-            <div class="btn btn-danger btn-sm pull-left" ng-click="removeAstreinte(astreinte)">
-                <span class="fa fa-times"></span>
-            </div>
+            <h4>
+                <div class="btn btn-default btn-lg pull-left" ng-class="{'btn-primary':!$first}" ng-disabled="$first" ng-click="moveTo($index-1)">
+                    <span class="fa fa-arrow-left"></span>
+                </div>
+                &nbsp;{{astreinte.date|date:'EEE d MMMM yyyy'}}&nbsp;
+                <div class="btn btn-default btn-lg pull-right" ng-class="{'btn-primary':!$last}"  ng-disabled="$last" ng-click="moveTo($index+1)">
+                    <span class="fa fa-arrow-right"></span>
+                </div>
 
-            &nbsp;{{astreinte.date|date:'EEEE d MMMM yyyy'}}&nbsp;
-
-            <div class="btn btn-success btn-sm pull-right" ng-click="addAppel(astreinte)">
-                <span class="fa fa-plus"></span>
-            </div>
-
+            </h4>
+            <div class="clearfix"></div>
         </div>
-
-        <table class="table">
-            <colgroup>
-                <col/>
-                <col width="50%"/>
-                <col width="50%"/>
-                <col/>
-            </colgroup>
+        <table class="table table-condensed">
             <tr>
-                <td colspan="3"><input class="form-control" type="date" ng-model="astreinte.date"/></td>
+                <td>
+                    <div class="btn btn-danger" ng-click="removeAstreinte(astreinte)">
+                        <span class="fa fa-times"></span>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <input class="form-control" type="date" ng-model="astreinte.date"/>
+                </td>
                 <td>
                     <span ng-hide="astreinte.date.getDay()==0">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="astreinte.ferie"/>Ferié
+                                <input type="checkbox" ng-model="astreinte.ferie"/>
+                                <span class="hidden-xs">Ferié</span>
                             </label>
                         </div>
                     </span>
@@ -111,14 +113,18 @@
             </tr>
             <tr ng-repeat="appel in astreinte.appels">
                 <td>
-                    <div class="btn btn-danger" ng-click="removeAppel(astreinte, appel)">
+                    <div class="btn btn-danger" ng-click="removeAppel(astreinte, appel)" ng-show=" astreinte.appels.length > 1">
                         <span class="fa fa-times"></span>
                     </div>
                 </td>
-                <td><input class="form-control" type="time" ng-model="appel.from"/></td>
-                <td><input class="form-control" type="time" ng-model="appel.to"/></td>
+                <td><input class="form-control input-sm" type="time" ng-model="appel.from"/></td>
+                <td><input class="form-control input-sm" type="time" ng-model="appel.to"/></td>
                 <td>
                     <div class="fa fa-warning fa-2x text-danger" ng-show="appel.error"></div>
+
+                    <div class="btn btn-success pull-right" ng-click="addAppel(astreinte)" ng-show="!appel.error && $last">
+                        <span class="fa fa-plus"></span>
+                    </div>
                     <!--{{appel.error}}-->
                 </td>
             </tr>

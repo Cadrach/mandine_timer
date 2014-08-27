@@ -3,11 +3,11 @@
  ======== Module Definition ===========================
  */
 var module = angular.module('Application', [
-    'ngAnimate',
-    'mgcrea.ngStrap',
+//    'ngAnimate',
+//    'mgcrea.ngStrap',
     'LocalStorageModule'
 ])
-.controller('ctrlMain', ['$scope', 'localStorageService', ctrlMain]);
+.controller('ctrlMain', ['$scope', '$filter', 'localStorageService', ctrlMain]);
 
 //This directive allows us to pass a function in on an enter key to do what we want.
 module.directive('ngEnter', function () {
