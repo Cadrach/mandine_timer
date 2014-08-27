@@ -53,6 +53,7 @@ function ctrlMain($scope, $filter, localStorageService){
         if(confirm('Êtes vous sûr(e) de vouloir supprimer cette date?'))
         {
             $scope.astreintes.splice($scope.astreintes.indexOf(ast), 1);
+            $scope.focus = 0;
         }
     }
 
