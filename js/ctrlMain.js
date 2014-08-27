@@ -83,7 +83,9 @@ function ctrlMain($scope, $filter, localStorageService){
 
     //Update storage when astreinte changes (deep watch)
     $scope.$watch(function(){return $scope.astreintes}, function(){
+        var focus = $scope.astreintes[$scope.focus];
         $scope.astreintes = $filter('orderBy')($scope.astreintes, 'date');
+        $scope.focus = $scope.astreintes.indexOf(focus);
 
         localStorageService.set('astreintes', $scope.astreintes);
 
