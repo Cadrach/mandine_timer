@@ -31,12 +31,18 @@ function ctrlMain($scope, localStorageService){
 
     //Remove astreinte
     $scope.removeAstreinte = function(ast){
-        $scope.astreintes.splice($scope.astreintes.indexOf(ast), 1);
+        if(confirm('Êtes vous sûr(e) de vouloir supprimer cette date?'))
+        {
+            $scope.astreintes.splice($scope.astreintes.indexOf(ast), 1);
+        }
     }
 
     //Reset all
     $scope.reset = function(){
-        $scope.astreintes = [];
+        if(confirm('Êtes vous sûr(e) de vouloir TOUT réinitialiser?'))
+        {
+            $scope.astreintes = [];
+        }
     }
 
     //Add Appel
@@ -63,26 +69,108 @@ function ctrlMain($scope, localStorageService){
         //Compute
         $scope.nbJourSemaine = 0;
         $scope.nbJourWeekend = 0;
-        $scope.astreintes.forEach(function(ast){
-            var date = moment(ast.date);
-            var day = date.day();
-            var isSunday = day==0;
-            var isWeekend = day==0 || day==6;
 
-            $scope.nbJourSemaine+= isWeekend ? 0:1;
-            $scope.nbJourWeekend+= isWeekend ? 1:0;
+        $scope.durationSemaine = moment.duration();
+        $scope.durationWeekend = moment.duration();
+
+        $scope.durationAppelJour = moment.duration();
+        $scope.durationAppelFerie = moment.duration();
+        $scope.durationAppelNuit = moment.duration();
+
+        $scope.astreintes.forEach(function(ast){
+            var start, end;
+            var date = moment(ast.date).seconds(0);
+            var nighttime = moment(date).hours(21).minutes(0);
+            var day = date.day();
+
+            var isSunday = day==0;
+            var isFerie = ast.ferie;
+            var isWeekend = day==6 || isSunday;
+
+            if(isWeekend)
+            {
+                start = moment(date).hours(7).minutes(30);
+                end = moment(start).add(24, 'hours');
+                $scope.nbJourWeekend++;
+                $scope.durationWeekend.add(moment.duration({hours: 24}))
+            }
+            else if(isFerie)
+            {
+                start = moment(date).hours(17).minutes(50);
+                end = moment(start).add({hours: 13, minutes: 40});
+                $scope.nbJourWeekend++;
+                $scope.durationWeekend.add(moment.duration({hours: 13, minutes: 40}))
+            }
+            else
+            {
+                start = moment(date).hours(17).minutes(50);
+                end = moment(start).add({hours: 13, minutes: 40});
+                $scope.nbJourSemaine++;
+                $scope.durationSemaine.add(moment.duration({hours: 13, minutes: 40}))
+            }
 
             ast.appels.forEach(function(appel){
                 var from = moment(appel.from);
                 var to = moment(appel.to);
-                from.year(date.year()).month(date.month()).day(date.day());
-                to.year(date.year()).month(date.month()).day(date.day());
-                if(from.diff(to)>0)
+
+                from.year(date.year()).month(date.month()).date(date.date());
+                to.year(date.year()).month(date.month()).date(date.date());
+
+                //If from under start
+                if(from.diff(start)<0)
+                {
+                    from.add(1, 'day');
+                }
+
+                if(to.diff(start)<0)
                 {
                     //If we changed day during appel
                     to.add(1, 'day');
                 }
-                console.log(from.format(), to.format());
+
+                //Validation
+                if(start.diff(from)>0)
+                {
+                    appel.error = "Horaire de début antérieur à l'astreinte";
+                }
+                else if(to.diff(end)>0)
+                {
+                    appel.error = "Horaire de fin postérieur à l'astreinte";
+                }
+                else if(to.diff(from)<0)
+                {
+                    appel.error = "Horaire de début supérieur à l'horaire de fin";
+                }
+                else
+                {
+                    appel.error = null;
+                }
+
+                var beforeNight = Math.abs(from.diff(nighttime) < 0 ? from.diff(moment.min(nighttime, to)):0);
+                var duringNight = Math.abs(to.diff(nighttime) < 0 ? moment.min(to, nighttime).diff(to):moment.max(nighttime, from).diff(to));
+
+                console.log(start.format(), end.format(), from.format());
+
+                console.log('BEFORE', from.format(), nighttime.format(), beforeNight, moment.duration(beforeNight).humanize(), from.diff(nighttime));
+                console.log('DURING', to.format(), nighttime.format(), duringNight, moment.duration(duringNight).humanize(), to.diff(nighttime));
+                console.log('----')
+
+
+                if(appel.error)
+                {
+                    return;
+                }
+
+                $scope.durationAppelNuit.add(duringNight);
+                if(isSunday || isFerie)
+                {
+                    $scope.durationAppelFerie.add(beforeNight);
+                }
+                else
+                {
+                    $scope.durationAppelJour.add(beforeNight);
+                }
+
             })
         });
 

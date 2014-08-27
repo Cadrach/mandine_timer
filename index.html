@@ -5,6 +5,7 @@
 
 <!--JS LIB-->
 <script type="text/javascript" src="bower/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="bower/moment-duration-format/lib/moment-duration-format.js"></script>
 
 <!--ANGULAR-->
 <script type="text/javascript" src="bower/angular/angular.js"></script>
@@ -29,10 +30,34 @@
         <div class="panel-heading">Mandine Timer's</div>
             <table class="table table-condensed">
                 <tr>
-                    <th>Jours Semaine</th><td>{{nbJourSemaine}}</td>
+                    <th>Jours Semaine</th>
+                    <td>17h50 / 07h30</td>
+                    <td>{{nbJourSemaine}}</td>
+                    <td class="text-right">{{durationSemaine.format('h[h] mm[m]')}}</td>
                 </tr>
                 <tr>
-                    <th>Jours Weekend</th><td>{{nbJourWeekend}}</td>
+                    <th>Jours Weekend/Feriés</th>
+                    <td>07h30 / 07h30</td>
+                    <td>{{nbJourWeekend}}</td>
+                    <td class="text-right">{{durationWeekend.format('h[h] mm[m]')}}</td>
+                </tr>
+                <tr>
+                    <th>Dérangé Jour</th>
+                    <td>17h50 / 21h00</td>
+                    <td>&nbsp;</td>
+                    <td class="text-right">{{durationAppelJour.format('h[h] mm[m]')}}</td>
+                </tr>
+                <tr>
+                    <th>Dérangé Nuit</th>
+                    <td>21h00 / 07h30</td>
+                    <td>&nbsp;</td>
+                    <td class="text-right">{{durationAppelNuit.format('h[h] mm[m]')}}</td>
+                </tr>
+                <tr>
+                    <th>Dérangé Dimanche/Ferié</th>
+                    <td>07h30 / 21h00</td>
+                    <td>&nbsp;</td>
+                    <td class="text-right">{{durationAppelFerie.format('h[h] mm[m]')}}</td>
                 </tr>
             </table>
 
@@ -69,9 +94,20 @@
                 <col/>
                 <col width="50%"/>
                 <col width="50%"/>
+                <col/>
             </colgroup>
             <tr>
                 <td colspan="3"><input class="form-control" type="date" ng-model="astreinte.date"/></td>
+                <td>
+                    <span ng-hide="astreinte.date.getDay()==0">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="astreinte.ferie"/>Ferié
+                            </label>
+                        </div>
+                    </span>
+                    <span ng-show="astreinte.date.getDay()==0">{{astreinte.date|date:'EEEE'}}</span>
+                </td>
             </tr>
             <tr ng-repeat="appel in astreinte.appels">
                 <td>
@@ -81,10 +117,14 @@
                 </td>
                 <td><input class="form-control" type="time" ng-model="appel.from"/></td>
                 <td><input class="form-control" type="time" ng-model="appel.to"/></td>
+                <td>
+                    <div class="fa fa-warning fa-2x text-danger" ng-show="appel.error"></div>
+                    <!--{{appel.error}}-->
+                </td>
             </tr>
         </table>
 
     </div>
 
-    <pre>{{astreintes|json}}</pre>
+    <!--<pre>{{astreintes|json}}</pre>-->
 </div>
