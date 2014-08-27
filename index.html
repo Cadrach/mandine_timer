@@ -1,0 +1,90 @@
+<!--CSS-->
+<link href="bower/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="bower/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="bower/angular-motion/dist/angular-motion.min.css" media="screen" rel="stylesheet" type="text/css">
+
+<!--JS LIB-->
+<script type="text/javascript" src="bower/moment/min/moment.min.js"></script>
+
+<!--ANGULAR-->
+<script type="text/javascript" src="bower/angular/angular.js"></script>
+<script type="text/javascript" src="bower/angular-strap/dist/angular-strap.js"></script>
+<script type="text/javascript" src="bower/angular-strap/dist/angular-strap.tpl.min.js"></script>
+<!--<script type="text/javascript" src="bower/angular-sanitize/angular-sanitize.min.js"></script>-->
+<script type="text/javascript" src="bower/angular-animate/angular-animate.min.js"></script>
+<script type="text/javascript" src="bower/angular-local-storage/angular-local-storage.min.js"></script>
+
+<!--CODE-->
+<script type="text/javascript" src="js/ctrlMain.js"></script>
+<script type="text/javascript" src="js/application.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
+
+<title>Mandine Timer's</title>
+
+<div class="container" ng-app="Application" ng-controller="ctrlMain">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Mandine Timer's</div>
+            <table class="table table-condensed">
+                <tr>
+                    <th>Jours Semaine</th><td>{{nbJourSemaine}}</td>
+                </tr>
+                <tr>
+                    <th>Jours Weekend</th><td>{{nbJourWeekend}}</td>
+                </tr>
+            </table>
+
+        <div class="panel-body">
+            <div class="btn btn-success pull-left" ng-click="addAstreinte()">
+                <span class="fa fa-plus"></span> Ajouter
+            </div>
+
+            <div class="btn btn-default pull-right" ng-click="reset()">
+                <span class="fa fa-refresh"></span> Reset
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div ng-repeat="astreinte in astreintes|orderBy:'date'" class="panel panel-default">
+        <div class="panel-heading">
+
+            <div class="btn btn-danger btn-sm pull-left" ng-click="removeAstreinte(astreinte)">
+                <span class="fa fa-times"></span>
+            </div>
+
+            &nbsp;{{astreinte.date|date:'EEEE d MMMM yyyy'}}&nbsp;
+
+            <div class="btn btn-success btn-sm pull-right" ng-click="addAppel(astreinte)">
+                <span class="fa fa-plus"></span>
+            </div>
+
+        </div>
+
+        <table class="table">
+            <colgroup>
+                <col/>
+                <col width="50%"/>
+                <col width="50%"/>
+            </colgroup>
+            <tr>
+                <td colspan="3"><input class="form-control" type="date" ng-model="astreinte.date"/></td>
+            </tr>
+            <tr ng-repeat="appel in astreinte.appels">
+                <td>
+                    <div class="btn btn-danger" ng-click="removeAppel(astreinte, appel)">
+                        <span class="fa fa-times"></span>
+                    </div>
+                </td>
+                <td><input class="form-control" type="time" ng-model="appel.from"/></td>
+                <td><input class="form-control" type="time" ng-model="appel.to"/></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <pre>{{astreintes|json}}</pre>
+</div>
