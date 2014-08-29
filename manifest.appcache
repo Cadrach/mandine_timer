@@ -1,0 +1,37 @@
+CACHE MANIFEST
+
+CACHE:
+bower/bootstrap/dist/css/bootstrap.min.css
+bower/font-awesome/css/font-awesome.min.css
+
+#JS LIB
+bower/moment/min/moment.min.js
+bower/moment-duration-format/lib/moment-duration-format.js
+
+#ANGULAR
+bower/angular/angular.min.js
+#bower/angular-strap/dist/angular-strap.js
+#bower/angular-strap/dist/angular-strap.tpl.min.js
+#bower/angular-sanitize/angular-sanitize.min.js
+#bower/angular-animate/angular-animate.min.js
+bower/angular-local-storage/angular-local-storage.min.js
+
+#CODE
+js/ctrlMain.js
+js/application.js
+
+#path to fa css
+bower/font-awesome/fonts/fontawesome-webfont.eot?v=4.1.0
+bower/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.1.0
+bower/font-awesome/fonts/fontawesome-webfont.woff?v=4.1.0
+bower/font-awesome/fonts/fontawesome-webfont.ttf?v=4.1.0
+bower/font-awesome/fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular
+
+NETWORK:
+*
+
+FALLBACK:
+/bower/font-awesome/fonts/fontawesome-webfont.woff bower/font-awesome/fonts/fontawesome-webfont.woff
+/bower/font-awesome/fonts/fontawesome-webfont.eot bower/font-awesome/fonts/fontawesome-webfont.eot
+/bower/font-awesome/fonts/fontawesome-webfont.svg bower/font-awesome/fonts/fontawesome-webfont.svg
+/bower/font-awesome/fonts/fontawesome-webfont.ttf bower/font-awesome/fonts/fontawesome-webfont.ttf
